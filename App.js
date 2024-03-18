@@ -10,6 +10,11 @@ import EmptyScreen from './src/screens/AND103/Lab 1/EmptyScreen'
 import Ex2 from './src/screens/AND103/Lab 1/Ex2'
 import CRO102 from './src/screens/CRO102'
 import CROLab1 from './src/screens/CRO102/Lab 1/CROLab1'
+import Main from './src/screens/CRO102/Lab 2/Main'
+import MainLab3 from './src/screens/CRO102/Lab 3/MainLab3'
+import Ex1Lab3 from './src/screens/CRO102/Lab 3/Ex1'
+import Ex2Lab3 from './src/screens/CRO102/Lab 3/Ex2'
+import Ex3Lab3 from './src/screens/CRO102/Lab 3/Ex3'
 
 const Stack = createNativeStackNavigator()
 const App = () => {
@@ -24,8 +29,11 @@ const App = () => {
         <Stack.Screen name='Empty' component={EmptyScreen} options={{headerShown:false}} />
         <Stack.Screen name='CRO102' component={CRO102} options={{headerShown:false}}/>
         <Stack.Screen name='Lab1CRO' component={CROLab1} options={{headerShown:false}}/>
-
-
+        <Stack.Screen name='Lab2CRO' component={Main} options={{headerShown:false}}/>
+        <Stack.Screen name='Lab3CRO' component={MainLab3} options={{headerShown:false}}/>
+        <Stack.Screen name='Ex1Lab3' component={Ex1Lab3} options={{headerShown:false}}/>
+        <Stack.Screen name='Ex2Lab3' component={Ex2Lab3} options={{headerShown:false}}/>
+        <Stack.Screen name='Ex3Lab3' component={Ex3Lab3} options={{headerShown:false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   )
