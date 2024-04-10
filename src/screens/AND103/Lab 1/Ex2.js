@@ -1,46 +1,67 @@
-import React, { Component, useEffect, useState } from 'react'
-import { Text, View } from 'react-native'
-import auth from '@react-native-firebase/auth'
-import CommonInput from '../../../components/TextInput'
-import CommonButton from '../../../components/Button'
-const Ex2 = ({ navigation }) => {
-    const [phoneNumber, setPhoneNumber] = useState('')
-    const [confirm, setConfirm] = useState(null)
-    const [code, setCode] = useState('')
+import React, { useEffect, useState } from 'react';
+import { Text, View, Button, Alert } from 'react-native';
+import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
+
+const Ex2 = () => {
+    const [user, setUser] = useState(null);
+
+    async function onGoogleButtonPress() {
+        try {
+            // Kiểm tra nếu thiết bị của bạn hỗ trợ Google Play
+            await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+            // Đăng nhập bằng Google và lấy mã thông báo của người dùng
+            const { idToken } = await GoogleSignin.signIn();
+            console.log(idToken);
+            Alert.alert('Thành công', 'Bạn đã đăng nhập');
+
+            // Tạo một Google credential từ mã thông báo
+            const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+            // Đăng nhập người dùng vào Firebase bằng Google credential
+            const firebaseUserCredential = await auth().signInWithCredential(googleCredential);
+
+            // Lấy thông tin người dùng từ credential
+            setUser(firebaseUserCredential.user);
+        } catch (error) {
+            console.log(error);
+            Alert.alert('Lỗi', 'Đăng nhập thất bại');
+        }
+    }
+
+    const handleSignout = async () => {
+        try {
+            await GoogleSignin.signOut();
+            setUser(null);
+            Alert.alert('Thành công', 'Bạn đã đăng xuất');
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
-        auth().settings.appVerificationDisabledForTesting = true;
+        // Cấu hình GoogleSignin
+        GoogleSignin.configure({
+            webClientId: '429668136718-q8b57it91tf5ppebt1rhms9aaahmn05b.apps.googleusercontent.com',
+        });
     }, []);
-    const handleSigninWithPhoneNumber = async (phoneNumber) => {
-        try {
-            const confirmation = await auth().signInWithPhoneNumber(phoneNumber)
-            setConfirm(confirmation)
-        } catch (e) {
-            console.error('Error sending code: ' + e)
-        }
-    }
-    const confirmCode = async () => {
-        try {
-            await confirm.confirm(code)
-            navigation.navigate('Empty')
-        } catch (e) {
-            console.log('Invalid code: ' + e)
-        }
-    }
 
     return (
-        <View className='flex-1 p-5'>
-            <Text className='font-bold text-2xl my-10 mb-24 text-black'>Login With Your Email & Password</Text>
-            <View className='px-10'>
-                <CommonInput placeholder='Phone number' value={phoneNumber} onChangeText={(text) => { setPhoneNumber(text) }} />
-                <CommonButton title={'Send Code'} onPress={() => handleSigninWithPhoneNumber(phoneNumber)} />
-
-                <CommonInput placeholder='Confirmation Code' />
-                <CommonButton title='Submit' onPress={() => confirmCode()} />
-
-            </View>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            {user && (
+                <View style={{ marginBottom: 20 }}>
+                    <Text>Email người dùng: {user.email}</Text>
+                </View>
+            )}
+            <GoogleSigninButton
+                onPress={() =>
+                    onGoogleButtonPress().then(() => console.log('Đăng nhập thành công bằng Google!'))
+                }
+            />
+            <View style={{ marginVertical: 10 }} />
+            <Button title="Đăng xuất" onPress={handleSignout} />
         </View>
-    )
-}
+    );
+};
 
-export default Ex2
+export default Ex2;

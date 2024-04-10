@@ -129,6 +129,7 @@ const Ex3Lab3 = () => {
             extrapolate: 'clamp'
         })
     }
+    
     const AnimatedTextInput = Animated.createAnimatedComponent(TextInput)
     return (
         <View>

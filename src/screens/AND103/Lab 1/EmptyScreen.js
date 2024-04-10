@@ -12,7 +12,7 @@ const EmptyScreen = ({ navigation }) => {
     auth()
       .signOut()
       .then(() => {
-        navigation.navigate('Lab1');
+        navigation.navigate('Ex1');
       });
   };
 
